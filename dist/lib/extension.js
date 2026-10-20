@@ -792,6 +792,7 @@ export default function (pi) {
                 recordRuntimeEvent,
             },
             recordRuntimeEvent,
+            isStreamMode: configControls.isActivityStreamMode,
         },
         activityVerbosity: {
             getActivityMode: configControls.getActivityVerbosity,
@@ -802,7 +803,12 @@ export default function (pi) {
             sendMessage,
             sendRichMessage,
             editMessageText: editTelegramMessageText,
+            deleteMessage: deleteTelegramMessage,
         },
+    });
+    const previewStreamClearRuntime = Bindings.createTelegramPreviewStreamClearRuntime({
+        clearPreview: previewRuntime.clear,
+        clearStreamMessage: activityVerbosityRuntime.clearStreamMessage,
     });
     const { mutation: queueMutationRuntime, dispatchNext: dispatchNextQueuedTelegramTurn, requestNextDispatchAnnouncement, cancelNextDispatchAnnouncement, watchdog: queueDispatchWatchdogRuntime, onTurnEnd: onSteerTurnEnd, } = Bindings.createTelegramQueueBindingRuntime({
         store: telegramQueueStore,
@@ -2043,7 +2049,7 @@ export default function (pi) {
             clearModelMenuState: modelMenuRuntime.clear,
             getActiveTurnChatId: activeTurnRuntime.getChatId,
             getActiveTurnTarget: activeTurnRuntime.getTarget,
-            clearPreview: previewRuntime.clear,
+            clearPreview: previewStreamClearRuntime.clear,
             clearActiveTurn: activeTurnRuntime.clear,
             clearAbort: abort.clearHandler,
             recordRuntimeEvent,
